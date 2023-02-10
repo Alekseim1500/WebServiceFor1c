@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+using System.Threading;
+//using System.Configuration;
+//using System.Linq;
+using KafkaNet;
+using KafkaNet.Model;
+using KafkaNet.Protocol;
+using Newtonsoft.Json;
+//using System.Dynamic;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Net;
+using Newtonsoft.Json.Serialization;
+using System.Text;
+using System.Threading.Tasks;
+using NLog;
+using System.Configuration;
+using System.Collections.Specialized;
+using System.Xml;
+//k
+
+public class Methods1C8
+{
+    public static async Task<string> ResponseAsync(string url)
+    {
+        try
+        {
+            var ListValidObjects = GlobalMethods.ParametrObjects("ValidObjects", url);
+            var ListStructureObjects = GlobalMethods.ParametrObjects("StructureObjects", url);
+            var ListTypeTransaction = GlobalMethods.ParametrObjects("TypeTransaction", url);
+            if ((ListValidObjects.Count == 0) | (ListTypeTransaction.Count == 0) | (ListStructureObjects.Count == 0))
+            {
+                throw new Exception("Не заполнены фильтры !");
+            }
+            ExeConfigurationFileMap map = new ExeConfigurationFileMap { ExeConfigFilename = AppDomain.CurrentDomain.BaseDirectory + "My.config" };
+            var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+            while (true)
+            {
+                WebRequest request = WebRequest.Create(url);
+                request.Timeout = 300000;
+                request.ContentType = "application/json";
+                request.Method = "POST"; // для отправки используется метод Post
+                var credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
+                request.Credentials = credentials;
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    var Filter = new { УНП = config.AppSettings.Settings["УНП"].Value, ValidObjects = ListValidObjects, TypeTransaction = ListTypeTransaction, Transaction = config.AppSettings.Settings[url].Value };
+                    streamWriter.Write(JsonConvert.SerializeObject(Filter));
+                }
+                using (WebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+                {
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            var jarray = JsonConvert.DeserializeObject<JArray>(reader.ReadToEnd());
+                            if (jarray.Count > 0)
+                            {
+                                foreach (var Получатель in Получатели.Consumer1С7)
+                                {
+                                    if (!Methods1C7.Connect(Получатель))
+                                    {
+                                        throw new Exception("Ошибка подключения к 1С 7!");
+                                    }
+                                    foreach (var arrayItem in jarray)
+                                    {
+                                        foreach (var StructureObject in ListStructureObjects)
+                                        {
+                                            dynamic Obj = (dynamic)typeof(Structure).GetNestedType(StructureObject);
+                                            dynamic ElementArray = arrayItem.ToObject(Obj);
+                                            dynamic Element = JsonConvert.SerializeObject(ElementArray, new JsonSerializerSettings
+                                            {
+                                                NullValueHandling = NullValueHandling.Ignore,
+                                                ContractResolver = CustomDataContractResolver.Instance
+                                            });
+
+                                            Methods1C7.PostObject(Element, Получатель);
+                                            WebLogger.logger.Trace(Element);
+                                            config.AppSettings.Settings[url].Value = ElementArray.GetType().GetProperty("Транзакция").GetValue(ElementArray, null);
+                                            config.Save();
+                                        }
+                                    }
+                                    Methods1C7.Disconnect();
+                                }
+                            }
+                        }
+                    }
+                }
+                Thread.Sleep(200);
+            }
+        }
+        catch (Exception ex)
+        {
+            Methods1C7.Disconnect();
+            var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
+            Messenger.Post(errorMessage);
+            WebLogger.logger.Error(errorMessage);
+            return errorMessage;
+        }
+    }
+}
