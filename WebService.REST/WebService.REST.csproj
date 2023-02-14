@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WebService.REST</RootNamespace>
     <AssemblyName>WebService.REST</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44318</IISExpressSSLPort>
@@ -115,11 +115,28 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="testCOM\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="testCOM\DataBase1c7Info.cs" />
+    <Compile Include="testCOM\Response.cs" />
+    <Compile Include="testCOM\ScanList.cs" />
     <Compile Include="WebService.svc.cs">
       <DependentUpon>WebService.svc</DependentUpon>
     </Compile>
+    <Compile Include="WebService\CustomDataContractResolver.cs" />
+    <Compile Include="WebService\GlobalMethods.cs" />
+    <Compile Include="WebService\GlobalVar.cs" />
+    <Compile Include="WebService\Kafka.cs" />
+    <Compile Include="WebService\Messenger.cs" />
+    <Compile Include="WebService\Methods1C7.cs" />
+    <Compile Include="WebService\Methods1C8.cs" />
+    <Compile Include="WebService\Parametr1C7.cs" />
+    <Compile Include="WebService\Parametr1C8.cs" />
+    <Compile Include="WebService\Structure.cs" />
+    <Compile Include="WebService\WebLogger.cs" />
+    <Compile Include="WebService\WebService.cs" />
+    <Compile Include="WebService\Отправители.cs" />
+    <Compile Include="WebService\Получатели.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

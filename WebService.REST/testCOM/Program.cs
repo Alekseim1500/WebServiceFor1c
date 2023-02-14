@@ -1,65 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 
 namespace testCOM
-{
-
-    public class ScanList
-    {
-        public String ТШК { get; set; }
-        public String Короб { get; set; }
-        public String Ячейка { get; set; }
-    }
-    public class Response
-    {
-        public int VendorID { get; set; }
-        public String TSHK { get; set; }
-        public String DeviceName { get; set; }
-        public String RequestType { get; set; }
-        public String Комплектовщик { get; set; }
-        public String ObjectName { get; set; }
-        public String ObjectDate { get; set; }
-        public String ObjectNumber { get; set; }
-        public int isTest { get; set; }
-        public List<ScanList> МассивШтрихкодов { get; set; }
-        public Response()
-        {
-            МассивШтрихкодов = new List<ScanList>();
-            isTest = 1;
-        }
-    }
-
-    class DataBase1c7Info
-    {
-        public String Path { get; set; }
-        public string Login { get; set; }
-        public string Pass { get; set; }
-        public DataBase1c7Info(int isTest)
-        {
-            if (isTest == 1)
-            {
-                Path = "T:\\DB_Hashkovskij\\TSD_testing";
-                Login = "AutoWriterTSD";
-                Pass = "v6HE62";
-            }
-            else if (isTest == 0)
-            {
-                Path = "D:\\TSHK_RO";
-                Login = "AutoWriterTSD";
-                Pass = "v6HE62";
-            }
-            else if (isTest == 2)
-            {
-                Path = "E:\\Bases1c7\\TSHK_M";
-                Login = "User";
-                Pass = "1850";
-            }
-
-        }
-    }
+{  
     internal class Program
     {
         public static string Main(string response_text)
