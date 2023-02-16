@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
@@ -25,6 +26,7 @@ using System.Configuration;
 using System.Collections.Specialized;
 using System.Xml;
 //k
+*/
 
 namespace WebService.REST
 {

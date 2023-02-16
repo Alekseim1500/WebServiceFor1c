@@ -15,6 +15,11 @@ namespace WebService.REST
     public class WebService
     {
 
+        [WebGet(UriTemplate = "/AAA")]
+        public string AAA()
+        {
+            return "aaa";
+        }
 
         // Чтобы использовать протокол HTTP GET, добавьте атрибут [WebGet]. (По умолчанию ResponseFormat имеет значение WebMessageFormat.Json.)
         // Чтобы создать операцию, возвращающую XML,
@@ -53,7 +58,7 @@ namespace WebService.REST
 
 
         [WebGet(UriTemplate = "/GetDocument")]
-        public string GetDocument()
+        public string GetDocument() // тут ошибка вылетает
         {
             Methods1C7 _1C7 = new Methods1C7();
             bool result = _1C7.GetDocument(out dynamic Element, out string Error);
@@ -118,15 +123,7 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/PostKafka")]
         public string PostKafka()
         {
-            bool result = Kafka.Produser("");
-            if (result == true)
-            {
-                return "Отправили сообщение кафке !";
-            }
-            else
-            {
-                return "Ошибка отправки сообщения кафке ";
-            }
+            return Kafka.Produser("Привет kafka!");
         }
 
         [WebGet(UriTemplate = "/GetKafka")]
@@ -139,7 +136,7 @@ namespace WebService.REST
             }
             else
             {
-                return "Ошибка получения сообщения от кафки !" + Error;
+                return "Ошибка получения сообщения от кафки! " + Error;
             }
         }
 
@@ -150,7 +147,7 @@ namespace WebService.REST
             UriTemplate = "/CreateDocument1C7",
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Wrapped)]
-        public string CreateDocument1C7()
+        public string CreateDocument1C7() // метод не разрешён
         {
 
             var requestMessage = OperationContext.Current.RequestContext.RequestMessage;
@@ -197,7 +194,7 @@ namespace WebService.REST
           UriTemplate = "/TSD",
           ResponseFormat = WebMessageFormat.Json,
           BodyStyle = WebMessageBodyStyle.Wrapped)]
-        public string TSD(Stream body)
+        public string TSD(Stream body) // метод не разрешён 
         {
             //var requestMessage = OperationContext.Current.RequestContext.RequestMessage;
             //var messageDataProperty = requestMessage.GetType().GetProperty("MessageData", (BindingFlags)0x1FFFFFF);

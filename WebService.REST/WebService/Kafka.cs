@@ -1,60 +1,55 @@
 using System;
-using KafkaNet;
-using KafkaNet.Model;
-using KafkaNet.Protocol;
+using Confluent.Kafka;
 
 public class Kafka
 {
-    public static bool Produser(dynamic Element)
-    {
+    private static readonly string soket = "http://192.168.205.106:9092"; //2181
+    private static readonly string topic = "New_Topic";
 
+    public static string Produser(dynamic Element)
+    {
         try
         {
-            // var options = new KafkaOptions(new Uri("http://192.168.205.95:9092"));
-            var options = new KafkaOptions(new Uri("http://192.168.205.215:9092"));
-            var router = new BrokerRouter(options);
-            var client = new Producer(router);
+            // Настройка параметров продюсера
+            var config = new ProducerConfig
+            {
+                BootstrapServers = soket,
+                ClientId = "test-client"
+            };
+            var producer = new ProducerBuilder<Null, string>(config).Build();
 
-            client.SendMessageAsync("quickstart-events", new[] { new Message("LFLFLFLF") }).Wait();
-
-            using (client) { }
+            // Отправка сообщения в топик
+            var message = new Message<Null, string> { Value = Element };
+            var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult(); //на этой строчке долго сидит, не может отправить (не получается дойти до kafka?)
+            return $"Message: {result.Message}, Offset: {result.Offset}, TopicPartition: {result.TopicPartition}";
         }
         catch
         {
-            //Error = ex.Message;
-            return false;
+            return "Ошибка отправки сообщения ): ";
         }
-
-        return true;
-        //var options = new KafkaOptions(new Uri("http://192.168.205.95:9092"), new Uri("http://SERVER2:9092"));
-
     }
 
     public static bool Consumer(out string Mess, out string Error)
     {
         Mess = "";
         Error = "";
-        long offset = 0;
         try
         {
-
-            //var options = new KafkaOptions(new Uri("http://192.168.205.95:9092"));
-            var options = new KafkaOptions(new Uri("http://192.168.205.215:9092"));
-            var router = new BrokerRouter(options);
-            var consumer = new KafkaNet.Consumer(new ConsumerOptions("quickstart-events", router));
-            consumer.SetOffsetPosition(new OffsetPosition { PartitionId = 0, Offset = offset });
-            //var results = consumer.Consume().Take(3).ToList();
-            // Consume returns a blocking IEnumerable(ie: never ending stream)
-            //ensure the produced messages arrived
-
-            foreach (var message in consumer.Consume())
+            // создаем объект конфигурации ConsumerConfig, который будет использоваться для подключения к Kafka брокеру
+            var conf = new ConsumerConfig
             {
-                Mess = System.Text.Encoding.Default.GetString(message.Value);
+                GroupId = "test-consumer-group", // идентификатор группы, к которой будет принадлежать Consumer
+                BootstrapServers = soket,
+                AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
+            };
 
+            using (var consumer = new ConsumerBuilder<Ignore, string>(conf).Build())
+            {
+                // подписываемся и получаем следующее сообщение из топика
+                consumer.Subscribe(topic);
+                var message = consumer.Consume(); //и тут застревает
+                Mess = message.Message.ToString();
             }
-
-            //Console.WriteLine("Response: P{0},O{1} : {2}",
-            //    message.Meta.PartitionId, message.Meta.Offset, message.Value);      
         }
         catch (Exception ex)
         {

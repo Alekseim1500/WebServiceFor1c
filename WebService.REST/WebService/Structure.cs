@@ -47,7 +47,7 @@ public class Structure
     }
 
 
-        public class ТабличнаяЧастьBUH
+    public class ТабличнаяЧастьBUH
     {
         public string Номенклатура { get; set; }
         public int Количество { get; set; }
