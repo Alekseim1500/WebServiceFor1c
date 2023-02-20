@@ -17,13 +17,15 @@ public class Methods1C7
     [HandleProcessCorruptedStateExceptions]
     public static bool Connect(string path)
     {
-        
-        //GlobalVar.type1C = Type.GetTypeFromProgID("V77.Application");
+        //создаём экземпляр 1с7
         GlobalVar.type1C = Type.GetTypeFromProgID("V77.Application");
         GlobalVar.object1C = Activator.CreateInstance(GlobalVar.type1C);
+
+        //соединяемся
         object rmtrade = GlobalVar.type1C.InvokeMember("RMTrade", BindingFlags.GetProperty, null, GlobalVar.object1C, null);
         var arguments = new object[] { rmtrade, " /D" + path + " /N" + Parametr1C7.user + " /P" + Parametr1C7.pass, "NO_SPLASH_SHOW" };
         bool res = (bool)GlobalVar.type1C.InvokeMember("Initialize", BindingFlags.InvokeMethod, null, GlobalVar.object1C, arguments);
+
         return res;
     }
 
@@ -59,6 +61,7 @@ public class Methods1C7
     {
         try
         {
+            //получаем массивы из каталога
             var ListValidObjects = GlobalMethods.ParametrObjects("ValidObjects", Catalog);
             var ListStructureObjects = GlobalMethods.ParametrObjects("StructureObjects", Catalog);
             var ListTypeTransaction = GlobalMethods.ParametrObjects("TypeTransaction", Catalog);
@@ -73,7 +76,10 @@ public class Methods1C7
             var LogTrace1C7 = "";
             ExeConfigurationFileMap map = new ExeConfigurationFileMap { ExeConfigFilename = AppDomain.CurrentDomain.BaseDirectory + "My.config" };
             var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+
             var stringBuilder = new StringBuilder();
+
+            //streamReader - открыли файл каталог
             FileInfo log = new FileInfo(Catalog + "SYSLOG\\1cv7.mlg");
             using (var fileStream = log.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var streamReader = new StreamReader(fileStream, Encoding.GetEncoding(1251)))
@@ -84,9 +90,7 @@ public class Methods1C7
 
                 while (true)
                 {
-
                     while (!streamReader.EndOfStream)
-
                     {
 
                         line = await streamReader.ReadLineAsync();

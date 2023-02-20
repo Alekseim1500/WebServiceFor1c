@@ -3,7 +3,7 @@ using Confluent.Kafka;
 
 public class Kafka
 {
-    private static readonly string soket = "http://192.168.205.106:9092"; //2181
+    private static readonly string soket = "192.168.205.106:9092"; //2181
     private static readonly string topic = "New_Topic";
 
     public static string Produser(dynamic Element)
@@ -43,9 +43,9 @@ public class Kafka
                 AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
             };
 
-            using (var consumer = new ConsumerBuilder<Ignore, string>(conf).Build())
+            using (var consumer = new ConsumerBuilder<Null, string>(conf).Build())
             {
-                // подписываемся и получаем следующее сообщение из топика
+                // подписываемся и получаем сообщение из топика
                 consumer.Subscribe(topic);
                 var message = consumer.Consume(); //и тут застревает
                 Mess = message.Message.ToString();

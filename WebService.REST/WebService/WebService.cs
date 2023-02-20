@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace WebService.REST
 {
@@ -18,7 +19,8 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/AAA")]
         public string AAA()
         {
-            return "aaa";
+            var a = GlobalMethods.ParametrObjects("appSettings", "УНП");
+            return string.Join(", ", a);
         }
 
         // Чтобы использовать протокол HTTP GET, добавьте атрибут [WebGet]. (По умолчанию ResponseFormat имеет значение WebMessageFormat.Json.)
