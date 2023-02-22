@@ -46,17 +46,17 @@ ___
 
 **Информация о топиках:** *~/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe*
 
-**Узнать занятые порты:** netstat -pnltu
-**Завершить процесс:** kill -9 <pid> 
+**Узнать занятые порты:** *netstat -pnltu*
+**Завершить процесс:** *kill -9 pid*
 
-**Удалить группу пользователей:** ~/kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete –group Название_группы
+**Удалить группу пользователей:** *~/kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete –group Название_группы*
 
 
 
 
 **Открытие kafka для подключения:**
-sudo iptables -A INPUT -p tcp --dport 9092 -j ACCEPT
-заменить advertised.listeners в server.properties на advertised.listeners=PLAINTEXT://192.168.205.106:9092
+*sudo iptables -A INPUT -p tcp --dport 9092 -j ACCEPT*
+заменить *advertised.listeners* в *server.properties* на *advertised.listeners=PLAINTEXT://192.168.205.106:9092*
 
 
 
