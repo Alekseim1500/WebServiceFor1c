@@ -125,7 +125,8 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/PostKafka")]
         public string PostKafka()
         {
-            return Kafka.Produser("Привет kafka!");
+            DateTime currentTime = DateTime.Now;
+            return Kafka.Produser($"Привет kafka {currentTime.ToString()}!");
         }
 
         [WebGet(UriTemplate = "/GetKafka")]
@@ -134,7 +135,7 @@ namespace WebService.REST
             bool result = Kafka.Consumer(out string Mess, out string Error);
             if (result == true)
             {
-                return "Получили сообщение от кафки : " + Mess;
+                return "Получили сообщение от кафки: " + Mess;
             }
             else
             {

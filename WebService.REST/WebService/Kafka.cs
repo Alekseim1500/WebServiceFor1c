@@ -20,12 +20,12 @@ public class Kafka
 
             // Отправка сообщения в топик
             var message = new Message<Null, string> { Value = Element };
-            var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult(); //на этой строчке долго сидит, не может отправить (не получается дойти до kafka?)
-            return $"Message: {result.Message}, Offset: {result.Offset}, TopicPartition: {result.TopicPartition}";
+            var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult();
+            return $"Topic: {result.Topic}, Смещение: {result.Offset.Value}, Какое отправили сообщение: {result.Value}";
         }
         catch
         {
-            return "Ошибка отправки сообщения ): ";
+            return "Ошибка отправки сообщения :(";
         }
     }
 
@@ -47,8 +47,8 @@ public class Kafka
             {
                 // подписываемся и получаем сообщение из топика
                 consumer.Subscribe(topic);
-                var message = consumer.Consume(); //и тут застревает
-                Mess = message.Message.ToString();
+                var message = consumer.Consume();
+                Mess = message.Message.Value;
             }
         }
         catch (Exception ex)
