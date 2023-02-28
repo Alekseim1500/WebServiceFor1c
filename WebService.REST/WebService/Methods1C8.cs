@@ -30,9 +30,20 @@ public class Methods1C8
                 request.Method = "POST"; // для отправки используется метод Post
                 var credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
                 request.Credentials = credentials;
+
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
-                    var Filter = new { УНП = config.AppSettings.Settings["УНП"].Value, ValidObjects = ListValidObjects, TypeTransaction = ListTypeTransaction, Transaction = config.AppSettings.Settings[url].Value };
+                    //тут нужно будет поменять
+                    var a = config.AppSettings.Settings["УНП"].Value;
+                    var b = ListValidObjects;
+                    var c = ListTypeTransaction;
+                    var d = config.AppSettings.Settings[url].Value;
+                    var Filter = new { 
+                        УНП = a, 
+                        ValidObjects = b, 
+                        TypeTransaction = c, 
+                        Transaction = d 
+                    };
                     streamWriter.Write(JsonConvert.SerializeObject(Filter));
                 }
                 using (WebResponse response = (HttpWebResponse)await request.GetResponseAsync())

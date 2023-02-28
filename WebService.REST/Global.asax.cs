@@ -14,7 +14,6 @@ namespace WebService.REST
 
         protected void Application_Start(object sender, EventArgs e)
         {
-       
             //foreach (var str in Отправители.Produser1C7)
             //{s
             //    Task<string> task = Methods1C7.ReadAllTextAsync(str);

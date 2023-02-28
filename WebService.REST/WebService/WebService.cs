@@ -19,8 +19,11 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/AAA")]
         public string AAA()
         {
-            var a = GlobalMethods.ParametrObjects("appSettings", "УНП");
-            return string.Join(", ", a);
+            //var a = GlobalMethods.ParametrObjects("appSettings", "УНП");
+            //return string.Join(", ", a);
+            var a = Type.GetTypeFromProgID("V83.Application");
+            if (a == null) { return "null"; }
+            else { return a.ToString(); }
         }
 
         // Чтобы использовать протокол HTTP GET, добавьте атрибут [WebGet]. (По умолчанию ResponseFormat имеет значение WebMessageFormat.Json.)
@@ -126,7 +129,7 @@ namespace WebService.REST
         public string PostKafka()
         {
             DateTime currentTime = DateTime.Now;
-            return Kafka.Produser($"Привет kafka {currentTime.ToString()}!");
+            return Kafka.Produser($"Привет kafkaaa {currentTime.ToString()}!");
         }
 
         [WebGet(UriTemplate = "/GetKafka")]
