@@ -70,7 +70,7 @@ WantedBy=multi-user.target
 
 **Полные настройки топика:** *~/kafka/bin/kafka-configs.sh --describe --all --bootstrap-server=localhost:9092 --topic Название_потика*
 
-**Таймер для отдельного топика:** *~/kafka/bin/kafka-configs.sh --alter --add-config retention.ms = 300000 –bootstrap-server localhost:9092 --topic Название_топика*
+**Таймер для отдельного топика:** *~/kafka/bin/kafka-configs.sh --alter --add-config retention.ms = 300000 --bootstrap-server localhost:9092 --topic Название_топика*
 
 **Также присутствуют:** *log.retention.hours,log.retention.minutes и log.retention.ms*
 
@@ -85,7 +85,7 @@ WantedBy=multi-user.target
 
 **Список групп:** *~/kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list*
 
-**Удалить группу пользователей:** *~/kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete –group Название_группы*
+**Удалить группу пользователей:** *~/kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete --group Название_группы*
 
 
 
