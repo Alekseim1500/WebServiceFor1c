@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace WebService.REST
 {
@@ -21,9 +22,11 @@ namespace WebService.REST
         {
             //var a = GlobalMethods.ParametrObjects("appSettings", "УНП");
             //return string.Join(", ", a);
-            var a = Type.GetTypeFromProgID("V83.Application");
-            if (a == null) { return "null"; }
-            else { return a.ToString(); }
+
+            //var a = Type.GetTypeFromProgID("V83.Application");
+            //if (a == null) { return "null"; }
+            //else { return a.ToString(); }
+            return "";
         }
 
         // Чтобы использовать протокол HTTP GET, добавьте атрибут [WebGet]. (По умолчанию ResponseFormat имеет значение WebMessageFormat.Json.)
@@ -128,22 +131,13 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/PostKafka")]
         public string PostKafka()
         {
-            DateTime currentTime = DateTime.Now;
-            return Kafka.Produser($"Привет kafkaaa {currentTime.ToString()}!");
+            return Kafka.Produser($"Привет kafka {DateTime.Now.ToString()}!").ToString();
         }
 
         [WebGet(UriTemplate = "/GetKafka")]
         public string GetKafka()
         {
-            bool result = Kafka.Consumer(out string Mess, out string Error);
-            if (result == true)
-            {
-                return "Получили сообщение от кафки: " + Mess;
-            }
-            else
-            {
-                return "Ошибка получения сообщения от кафки! " + Error;
-            }
+            return Kafka.Consumer(out string Mess).ToString();
         }
 
 

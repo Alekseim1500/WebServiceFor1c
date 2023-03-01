@@ -6,7 +6,7 @@ public class Kafka
     private static readonly string soket = "192.168.205.106:9092"; //2181
     private static readonly string topic = "New_Topic";
 
-    public static string Produser(dynamic Element)
+    public static bool Produser(dynamic Element)
     {
         try
         {
@@ -21,18 +21,20 @@ public class Kafka
             // Отправка сообщения в топик
             var message = new Message<Null, string> { Value = Element };
             var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult();
-            return $"Topic: {result.Topic}, Смещение: {result.Offset.Value}, Какое отправили сообщение: {result.Value}";
+
+            WebLogger.logger.Trace($"Отправили в сообщение в kafka. Topic: {result.Topic}, Смещение: {result.Offset.Value}, Какое отправили сообщение: {result.Value}");
+            return true;
         }
         catch
         {
-            return "Ошибка отправки сообщения :(";
+            WebLogger.logger.Error($"Неудачная попытка отправки сообщения в kafka");
+            return false;
         }
     }
 
-    public static bool Consumer(out string Mess, out string Error)
+    public static bool Consumer(out string Mess)
     {
         Mess = "";
-        Error = "";
         try
         {
             // создаем объект конфигурации ConsumerConfig, который будет использоваться для подключения к Kafka брокеру
@@ -50,12 +52,14 @@ public class Kafka
                 var message = consumer.Consume();
                 Mess = message.Message.Value;
             }
+
+            WebLogger.logger.Trace($"Получили сообщение из kafka: {Mess}");
+            return true;
         }
         catch (Exception ex)
         {
-            Error = ex.Message;
+            WebLogger.logger.Error($"Неудачная попытка получения сообщения из kafka. Сообщение ошибки: {ex.Message}");
             return false;
         }
-        return true;
     }
 }
