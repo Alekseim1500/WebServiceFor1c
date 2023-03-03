@@ -67,10 +67,7 @@ public class Methods1C7
             var ListTypeTransaction = GlobalMethods.ParametrObjects("TypeTransaction", Catalog);
             if ((ListValidObjects.Count == 0) | (ListTypeTransaction.Count == 0) | (ListStructureObjects.Count == 0))
             {
-                var errorMessage = $"Не заполнены фильтры !";
-                Messenger.Post(errorMessage);
-                WebLogger.logger.Error(errorMessage);
-                return errorMessage;
+                throw new Exception("Не заполнены фильтры!");
             }
 
             var LogTrace1C7 = "";

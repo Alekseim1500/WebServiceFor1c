@@ -45,6 +45,7 @@ public class GlobalMethods
         return new List<string>();
     }
 
+    //для извлечения значений параметров из конфигурационного файла My.config (<section> <add key="return"/> </section>)
     public static dynamic ParametrObjects(string section)
     {
         ExeConfigurationFileMap map = new ExeConfigurationFileMap { ExeConfigFilename = AppDomain.CurrentDomain.BaseDirectory + "My.config" };
