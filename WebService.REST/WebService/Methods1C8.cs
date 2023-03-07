@@ -77,11 +77,13 @@ public class Methods1C8
                                         });
 
                                         //логируем и записывает последнюю транзакцию в "My.config"
-                                        WebLogger.logger.Trace($"Пришёл элемент {Element}");
+                                        WebLogger.logger.Trace($"Из 1с пришёл элемент {Element}");
                                         config.AppSettings.Settings[url].Value = ElementArray.GetType().GetProperty("Транзакция").GetValue(ElementArray, null);
                                         config.Save();
 
-                                        Kafka.Produser(arrayItem.ToString());
+                                        //отправляем в kafka (экземпляр kafka создаётся с помощью данных из "My.config")
+                                        var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
+                                        kafka.Produser(arrayItem.ToString());
                                     }
                                 }
                             }
@@ -105,38 +107,35 @@ public class Methods1C8
     {
         try
         {
-            var soket = "192.168.205.106:9092"; //2181
-            var topic = "New_Topic";
-
-            var conf = new ConsumerConfig
+            //экземпляр kafka создаётся с помощью данных из "My.config"
+            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
+            IConsumer<Null, string> consumer;
+            if (!kafka.Consumer(out consumer))
             {
-                GroupId = "test-consumer-group", // идентификатор группы, к которой будет принадлежать Consumer
-                BootstrapServers = soket,
-                AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
-            };
-
-            using (var consumer = new ConsumerBuilder<Null, string>(conf).Build())
+                throw new Exception("Не получилось подключиться к kafka!");
+            }
+            else
             {
-                // подписываемся и получаем сообщение из топика
-                consumer.Subscribe(topic);
-                //var url = "http://192.168.205.112/1c8testBD2/hs/EDO/Post";
-                while (true)
+                using (consumer)
                 {
-                    //WebRequest request = WebRequest.Create(url);
-                    //request.Timeout = 300000;
-                    //request.ContentType = "application/json";
-                    //request.Method = "POST";
-                    //request.Credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
+                    //var url = "http://192.168.205.112/1c8testBD2/hs/EDO/Post";
+                    while (true)
+                    {
+                        //WebRequest request = WebRequest.Create(url);
+                        //request.Timeout = 300000;
+                        //request.ContentType = "application/json";
+                        //request.Method = "POST";
+                        //request.Credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
 
-                    //using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                    //{
-                    //Kafka.Consumer(out string mess);
-                    //streamWriter.Write(mess);
-                    var data = await Task.Run(() => consumer.Consume());
-                    var mess = data.Message.Value;
-                    WebLogger.logger.Trace($"Получили сообщение из kafka: {mess}");
-                    //WebLogger.logger.Trace($"Отправили объект в 1с");
-                    //}
+                        //using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                        //{
+                        //streamWriter.Write(mess);
+                        var data = await Task.Run(() => consumer.Consume());
+                        var mess = data.Message.Value;
+                        WebLogger.logger.Trace($"Получили сообщение из kafka: {mess}");
+                        //WebLogger.logger.Trace($"Отправили объект в 1с");
+                        //}
+                    }
                 }
             }
         }

@@ -9,6 +9,8 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Configuration;
+using System.Security.Policy;
 
 namespace WebService.REST
 {
@@ -20,12 +22,6 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/AAA")]
         public string AAA()
         {
-            //var a = GlobalMethods.ParametrObjects("appSettings", "УНП");
-            //return string.Join(", ", a);
-
-            //var a = Type.GetTypeFromProgID("V83.Application");
-            //if (a == null) { return "null"; }
-            //else { return a.ToString(); }
             return "";
         }
 
@@ -131,13 +127,15 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/PostKafka")]
         public string PostKafka()
         {
-            return Kafka.Produser($"Привет kafka {DateTime.Now.ToString()}!").ToString();
+            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
+            return kafka.Produser($"Привет kafka {DateTime.Now.ToString()}!").ToString();
         }
 
         [WebGet(UriTemplate = "/GetKafka")]
         public string GetKafka()
         {
-            return Kafka.Consumer(out string Mess).ToString();
+            //return Kafka.Consumer(out string Mess).ToString();
+            return "Пока что не работает";
         }
 
 

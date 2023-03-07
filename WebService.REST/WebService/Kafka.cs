@@ -1,12 +1,20 @@
 using System;
+using System.Collections.Generic;
 using Confluent.Kafka;
+using KafkaNet.Protocol;
 
 public class Kafka
 {
-    private static readonly string soket = "192.168.205.106:9092"; //2181
-    private static readonly string topic = "New_Topic";
+    private readonly string soket = GlobalMethods.ParametrObjects("KafkaSoket").AllKeys[0];
+    private List<string> topics;
 
-    public static bool Produser(dynamic Element)
+
+    public Kafka(List<string> topics)
+    { 
+        this.topics = topics;
+    }
+
+    public bool Produser(dynamic mess)
     {
         try
         {
@@ -19,10 +27,14 @@ public class Kafka
             var producer = new ProducerBuilder<Null, string>(config).Build();
 
             // Отправка сообщения в топик
-            var message = new Message<Null, string> { Value = Element };
-            var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult();
+            var message = new Message<Null, string> { Value = mess };
+            
+            foreach (var topic in topics)
+            {
+                var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult();
+                WebLogger.logger.Trace($"Отправили в сообщение в kafka. Topic: {result.Topic}, Смещение: {result.Offset.Value}, Какое отправили сообщение: {result.Value}");
+            }
 
-            WebLogger.logger.Trace($"Отправили в сообщение в kafka. Topic: {result.Topic}, Смещение: {result.Offset.Value}, Какое отправили сообщение: {result.Value}");
             return true;
         }
         catch
@@ -32,9 +44,9 @@ public class Kafka
         }
     }
 
-    public static bool Consumer(out string Mess)
+    public bool Consumer(out IConsumer<Null, string> consumer)
     {
-        Mess = "";
+        consumer = null;
         try
         {
             // создаем объект конфигурации ConsumerConfig, который будет использоваться для подключения к Kafka брокеру
@@ -45,20 +57,15 @@ public class Kafka
                 AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
             };
 
-            using (var consumer = new ConsumerBuilder<Null, string>(conf).Build())
-            {
-                // подписываемся и получаем сообщение из топика
-                consumer.Subscribe(topic);
-                var message = consumer.Consume();
-                Mess = message.Message.Value;
-            }
+            var topics = new List<string> { "New_Topic", "New_Topic1" };
 
-            WebLogger.logger.Trace($"Получили сообщение из kafka: {Mess}");
+            consumer = new ConsumerBuilder<Null, string>(conf).Build();
+            consumer.Subscribe(topics);
+
             return true;
         }
-        catch (Exception ex)
+        catch
         {
-            WebLogger.logger.Error($"Неудачная попытка получения сообщения из kafka. Сообщение ошибки: {ex.Message}");
             return false;
         }
     }
