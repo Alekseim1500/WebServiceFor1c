@@ -1,16 +1,16 @@
 ## Оглавление
 
-- [Описание проекта](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#описание-проекта)
+- [Описание проекта](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#описание-проекта)
 
-- [Инструкция к работе с C#](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#инструкция-к-работе-с-c)
+- [Инструкция к работе с C#](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#инструкция-к-работе-с-c)
 
-- [Инструкция к работе с 1С](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#Инструкция-к-работе-с-1С)
+- [Инструкция к работе с 1С](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#Инструкция-к-работе-с-1С)
 
-- [Инструкция к работе с Apache Kafka](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#инструкция-к-работе-с-apache-kafka)
-  - [Установки](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#для-установки-нужно)
-  - [Запуск](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#запуск-kafka-и-zookeeper)
-  - [Команды для работы с Apache Kafka](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#необходимые-команды-для-работы-с-apache-kafka)
-  - [Полезные ссылки для Apache Kafka](https://github.com/Alekseim1500/Kafka-project-documentation/blob/main/README.md#источники-для-работы-с-apache-kafka)
+- [Инструкция к работе с Apache Kafka](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#инструкция-к-работе-с-apache-kafka)
+  - [Установки](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#для-установки-нужно)
+  - [Запуск](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#запуск-kafka-и-zookeeper)
+  - [Команды для работы с Apache Kafka](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#необходимые-команды-для-работы-с-apache-kafka)
+  - [Полезные ссылки для Apache Kafka](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#источники-для-работы-с-apache-kafka)
 
 
 ## Описание проекта
