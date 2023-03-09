@@ -20,13 +20,20 @@ public class Methods1C8
     {
         try
         {
+            //получаем id потока
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            WebLogger.logger.Trace($"Поток номер {threadId} работает с 1c8, расположенной на {url}");
+
+            //экземпляр Kafka создаётся с помощью данных из "My.config"
+            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"), threadId);
+
             //получаем данные для фильтра
             var ListValidObjects = GlobalMethods.ParametrObjects("ValidObjects", url);
             var ListStructureObjects = GlobalMethods.ParametrObjects("StructureObjects", url);
             var ListTypeTransaction = GlobalMethods.ParametrObjects("TypeTransaction", url);
             if ((ListValidObjects.Count == 0) | (ListTypeTransaction.Count == 0) | (ListStructureObjects.Count == 0))
             {
-                throw new Exception("Не заполнены фильтры!");
+                throw new Exception($"{threadId}: Не заполнены фильтры!");
             }
 
             //открываем файл "My.config"
@@ -77,12 +84,11 @@ public class Methods1C8
                                         });
 
                                         //логируем и записывает последнюю транзакцию в "My.config"
-                                        WebLogger.logger.Trace($"Из 1с пришёл элемент {Element}");
+                                        WebLogger.logger.Trace($"{threadId}: Из 1с пришёл элемент {Element}");
                                         config.AppSettings.Settings[url].Value = ElementArray.GetType().GetProperty("Транзакция").GetValue(ElementArray, null);
                                         config.Save();
 
-                                        //отправляем в kafka (экземпляр kafka создаётся с помощью данных из "My.config")
-                                        var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
+                                        //отправляем в kafka
                                         kafka.Produser(arrayItem.ToString());
                                     }
                                 }
@@ -107,12 +113,13 @@ public class Methods1C8
     {
         try
         {
+            var threadId = Thread.CurrentThread.ManagedThreadId;
             //экземпляр kafka создаётся с помощью данных из "My.config"
             var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
             IConsumer<Null, string> consumer;
             if (!kafka.Consumer(out consumer))
             {
-                throw new Exception("Не получилось подключиться к kafka!");
+                throw new Exception($"{threadId}: Не получилось подключиться к kafka!");
             }
             else
             {
@@ -132,8 +139,8 @@ public class Methods1C8
                         //streamWriter.Write(mess);
                         var data = await Task.Run(() => consumer.Consume());
                         var mess = data.Message.Value;
-                        WebLogger.logger.Trace($"Получили сообщение из kafka: {mess}");
-                        //WebLogger.logger.Trace($"Отправили объект в 1с");
+                        WebLogger.logger.Trace($"{threadId}: Получили сообщение из kafka: {mess}");
+                        //WebLogger.logger.Trace($"{threadId}: Отправили объект в 1с");
                         //}
                     }
                 }

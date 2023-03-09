@@ -7,10 +7,17 @@ public class Kafka
 {
     private readonly string soket = GlobalMethods.ParametrObjects("KafkaSoket").AllKeys[0];
     private List<string> topics;
+    private int threadId = 0;
 
+
+    public Kafka(List<string> topics, int threadId)
+    { 
+        this.topics = topics;
+        this.threadId = threadId;
+    }
 
     public Kafka(List<string> topics)
-    { 
+    {
         this.topics = topics;
     }
 
@@ -32,14 +39,14 @@ public class Kafka
             foreach (var topic in topics)
             {
                 var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult();
-                WebLogger.logger.Trace($"Отправили в сообщение в kafka. Topic: {result.Topic}, Смещение: {result.Offset.Value}, Какое отправили сообщение: {result.Value}");
+                WebLogger.logger.Trace($"{threadId}: Отправили в сообщение в kafka. Topic: {result.Topic}, Какое отправили сообщение: {result.Value}");
             }
 
             return true;
         }
         catch
         {
-            WebLogger.logger.Error($"Неудачная попытка отправки сообщения в kafka");
+            WebLogger.logger.Error($"{threadId}: Неудачная попытка отправки сообщения в kafka");
             return false;
         }
     }
@@ -56,8 +63,6 @@ public class Kafka
                 BootstrapServers = soket,
                 AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
             };
-
-            var topics = new List<string> { "New_Topic", "New_Topic1" };
 
             consumer = new ConsumerBuilder<Null, string>(conf).Build();
             consumer.Subscribe(topics);
