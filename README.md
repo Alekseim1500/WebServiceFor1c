@@ -45,7 +45,7 @@ ___
 И распаковываем
 *tar -xvzf /tmp/kafka_2.13-3.2.1.tgz --strip 1*
 
-### Запуск Kafka и zookeeper
+#### Запуск Kafka и zookeeper
 
 Создание сервисов:\
 sudo nano /etc/systemd/system/kafka.service  
