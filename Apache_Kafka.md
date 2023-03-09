@@ -99,10 +99,10 @@ WantedBy=multi-user.target
 
 ### Источники
 
-https://ruvds.com/ru/helpcenter/kak-ustanovit-apache-kafka-na-ubuntu-20-04/ -- установка Apache kafka на сервер
-https://www.youtube.com/watch?v=fOh98R9usck&t=702s – Видео про несколько серверов
-https://www.tutorialspoint.com/apache_kafka/apache_kafka_basic_operations.htm Создание нескольких брокеров.
-https://vk.com/doc565756056_591392461?hash=bNCJxh3bbCLTfpl0RUzs96KlkjsXu2tuw6KyJN11FUw Apache kafka потоковая обработка и анализ данных
-https://russianblogs.com/article/8418667672/ Параметры для Kafka из консоли
-https://www.youtube.com/watch?v=EAphCykdjA0 – Установка linux ubuntu server
+https://ruvds.com/ru/helpcenter/kak-ustanovit-apache-kafka-na-ubuntu-20-04/ -- установка Apache kafka на сервер  
+https://www.youtube.com/watch?v=fOh98R9usck&t=702s – Видео про несколько серверов  
+https://www.tutorialspoint.com/apache_kafka/apache_kafka_basic_operations.htm Создание нескольких брокеров.  
+https://vk.com/doc565756056_591392461?hash=bNCJxh3bbCLTfpl0RUzs96KlkjsXu2tuw6KyJN11FUw Apache kafka потоковая обработка и анализ данных  
+https://russianblogs.com/article/8418667672/ Параметры для Kafka из консоли  
+https://www.youtube.com/watch?v=EAphCykdjA0 – Установка linux ubuntu server  
 
