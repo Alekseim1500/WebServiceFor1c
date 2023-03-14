@@ -18,12 +18,13 @@ public class Methods1C8
     //из 1с в kafka
     public static async Task<string> ResponseAsync(string url)
     {
+        //получаем id потока
+        var id = Thread.CurrentThread.ManagedThreadId;
+        var threadId = "п" + id.ToString();
+        WebLogger.logger.Trace($"{threadId}: Получает сообщение из 1с по url {url} и отправляет в kafka");
+
         try
         {
-            //получаем id потока
-            var threadId = Thread.CurrentThread.ManagedThreadId;
-            WebLogger.logger.Trace($"Поток номер {threadId} работает с 1c8, расположенной на {url}");
-
             //экземпляр Kafka создаётся с помощью данных из "My.config"
             var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"), threadId);
 
@@ -33,7 +34,7 @@ public class Methods1C8
             var ListTypeTransaction = GlobalMethods.ParametrObjects("TypeTransaction", url);
             if ((ListValidObjects.Count == 0) | (ListTypeTransaction.Count == 0) | (ListStructureObjects.Count == 0))
             {
-                throw new Exception($"{threadId}: Не заполнены фильтры!");
+                throw new Exception("Не заполнены фильтры!");
             }
 
             //открываем файл "My.config"
@@ -74,6 +75,8 @@ public class Methods1C8
                                 {
                                     foreach (var StructureObject in ListStructureObjects)
                                     {
+                                        WebLogger.logger.Trace($"{threadId}: Из 1с пришёл элемент {arrayItem}");
+
                                         //обрабатываем ответ
                                         dynamic Obj = (dynamic)typeof(Structure).GetNestedType(StructureObject);
                                         dynamic ElementArray = arrayItem.ToObject(Obj);
@@ -84,7 +87,6 @@ public class Methods1C8
                                         });
 
                                         //логируем и записывает последнюю транзакцию в "My.config"
-                                        WebLogger.logger.Trace($"{threadId}: Из 1с пришёл элемент {Element}");
                                         config.AppSettings.Settings[url].Value = ElementArray.GetType().GetProperty("Транзакция").GetValue(ElementArray, null);
                                         config.Save();
 
@@ -103,45 +105,49 @@ public class Methods1C8
         {
             var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
             Messenger.Post(errorMessage);
-            WebLogger.logger.Error(errorMessage);
+            WebLogger.logger.Error($"{threadId}: {errorMessage}");
             return errorMessage;
         }
     }
 
     //из kafka в 1с
-    public static async Task<string> PostObject(/*string url*/)
+    public static async Task<string> PostObject(string url)
     {
+        //получаем id потока
+        var id = Thread.CurrentThread.ManagedThreadId;
+        var threadId = "к" + id.ToString();
+        WebLogger.logger.Trace($"{threadId}: Получает сообщение из kafka и отправляет в 1с по url {url}");
+
         try
         {
-            var threadId = Thread.CurrentThread.ManagedThreadId;
             //экземпляр kafka создаётся с помощью данных из "My.config"
             var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
             IConsumer<Null, string> consumer;
             if (!kafka.Consumer(out consumer))
             {
-                throw new Exception($"{threadId}: Не получилось подключиться к kafka!");
+                throw new Exception("Не получилось подключиться к kafka!");
             }
             else
             {
                 using (consumer)
                 {
-                    //var url = "http://192.168.205.112/1c8testBD2/hs/EDO/Post";
                     while (true)
                     {
-                        //WebRequest request = WebRequest.Create(url);
-                        //request.Timeout = 300000;
-                        //request.ContentType = "application/json";
-                        //request.Method = "POST";
-                        //request.Credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
+                        WebRequest request = WebRequest.Create(url);
+                        request.Timeout = 300000;
+                        request.ContentType = "application/json";
+                        request.Method = "POST";
+                        request.Credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
 
-                        //using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                        //{
-                        //streamWriter.Write(mess);
-                        var data = await Task.Run(() => consumer.Consume());
-                        var mess = data.Message.Value;
-                        WebLogger.logger.Trace($"{threadId}: Получили сообщение из kafka: {mess}");
-                        //WebLogger.logger.Trace($"{threadId}: Отправили объект в 1с");
-                        //}
+                        using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                        {
+                            var data = await Task.Run(() => consumer.Consume());
+                            var mess = data.Message.Value;
+                            WebLogger.logger.Trace($"{threadId}: Получили сообщение из kafka: {mess}");
+
+                            streamWriter.Write(mess);
+                            WebLogger.logger.Trace($"{threadId}: Отправили объект в 1с");
+                        }
                     }
                 }
             }
@@ -150,7 +156,7 @@ public class Methods1C8
         {
             var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
             Messenger.Post(errorMessage);
-            WebLogger.logger.Error(errorMessage);
+            WebLogger.logger.Error($"{threadId}: {errorMessage}");
             return errorMessage;
         }
     }

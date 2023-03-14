@@ -17,7 +17,7 @@ public class Получатели
     {
         get
         {
-            return GlobalMethods.ParametrObjects("Consumer1С8");
+            return GlobalMethods.ParametrObjects("Consumer1C8");
         }
     }
 }

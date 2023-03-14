@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
 using Confluent.Kafka;
-using KafkaNet.Protocol;
 
 public class Kafka
 {
     private readonly string soket = GlobalMethods.ParametrObjects("KafkaSoket").AllKeys[0];
     private List<string> topics;
-    private int threadId = 0;
+    private string threadId = "";
 
 
-    public Kafka(List<string> topics, int threadId)
+    public Kafka(List<string> topics, string threadId)
     { 
         this.topics = topics;
         this.threadId = threadId;
@@ -39,7 +37,7 @@ public class Kafka
             foreach (var topic in topics)
             {
                 var result = producer.ProduceAsync(topic, message).GetAwaiter().GetResult();
-                WebLogger.logger.Trace($"{threadId}: Отправили в сообщение в kafka. Topic: {result.Topic}, Какое отправили сообщение: {result.Value}");
+                WebLogger.logger.Trace($"{threadId}: Отправили сообщение в kafka. Topic: {result.Topic}, Какое отправили сообщение: {result.Value}");
             }
 
             return true;
