@@ -6,6 +6,7 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Collections.Specialized;
 
 namespace WebService.REST
 {
@@ -14,15 +15,17 @@ namespace WebService.REST
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            //foreach (var str in Отправители.Produser1C8)
-            //{
-            //    Task<string> task = Methods1C8.ResponseAsync(str);
-            //}
+            NameValueCollection prod = Отправители.Produser1C8;
+            for (int i = 0; i < prod.AllKeys.Length; i++)
+            {
+                Task<string> task = Methods1C8.ResponseAsync(prod[i], i + 1);
+            }
 
-            //foreach (var str in Получатели.Consumer1С8)
-            //{
-            //    Task<string> task = Methods1C8.PostObject(str);
-            //}
+            NameValueCollection cons = Получатели.Consumer1С8;
+            for (int i = 0; i < cons.AllKeys.Length; i++)
+            {
+                Task<string> task = Methods1C8.PostObject(cons[i], i + 1);
+            }
 
             Task<string> task0 = SqlConnector.PostObject();
         }
