@@ -14,20 +14,14 @@ public class Kafka
         this.threadId = threadId;
     }
 
-    public Kafka(List<string> topics)
-    {
-        this.topics = topics;
-    }
-
-    public bool Produser(dynamic mess)
+    public bool ProduseMessage(dynamic mess)
     {
         try
         {
             // Настройка параметров продюсера
             var config = new ProducerConfig
             {
-                BootstrapServers = soket,
-                ClientId = "test-client"
+                BootstrapServers = soket
             };
             var producer = new ProducerBuilder<Null, string>(config).Build();
 
@@ -49,7 +43,7 @@ public class Kafka
         }
     }
 
-    public bool Consumer(out IConsumer<Null, string> consumer)
+    public bool GetConsumer(out IConsumer<Null, string> consumer)
     {
         consumer = null;
         try
@@ -57,7 +51,7 @@ public class Kafka
             // создаем объект конфигурации ConsumerConfig, который будет использоваться для подключения к Kafka брокеру
             var conf = new ConsumerConfig
             {
-                GroupId = "test-consumer-group", // идентификатор группы, к которой будет принадлежать Consumer
+                GroupId = threadId, // идентификатор группы, к которой будет принадлежать Consumer
                 BootstrapServers = soket,
                 AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
             };

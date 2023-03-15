@@ -20,14 +20,11 @@ public class Methods1C8
     {
         //получаем id потока
         var id = Thread.CurrentThread.ManagedThreadId;
-        var threadId = "п" + id.ToString();
-        WebLogger.logger.Trace($"{threadId}: Получает сообщение из 1с по url {url} и отправляет в kafka");
+        var threadId = "P" + id.ToString();
+        WebLogger.logger.Trace($"({threadId}): из 1с по url {url} в kafka");
 
         try
         {
-            //экземпляр Kafka создаётся с помощью данных из "My.config"
-            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"), threadId);
-
             //получаем данные для фильтра
             var ListValidObjects = GlobalMethods.ParametrObjects("ValidObjects", url);
             var ListStructureObjects = GlobalMethods.ParametrObjects("StructureObjects", url);
@@ -90,8 +87,10 @@ public class Methods1C8
                                         config.AppSettings.Settings[url].Value = ElementArray.GetType().GetProperty("Транзакция").GetValue(ElementArray, null);
                                         config.Save();
 
-                                        //отправляем в kafka
-                                        kafka.Produser(arrayItem.ToString());
+                                        //экземпляр Kafka создаётся с помощью данных из "My.config"
+                                        var validOb = ElementArray.GetType().GetProperty("ВидОбъекта").GetValue(ElementArray, null);
+                                        var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaProduserTopics", validOb), threadId);
+                                        kafka.ProduseMessage(arrayItem.ToString());
                                     }
                                 }
                             }
@@ -114,16 +113,18 @@ public class Methods1C8
     public static async Task<string> PostObject(string url)
     {
         //получаем id потока
-        var id = Thread.CurrentThread.ManagedThreadId;
-        var threadId = "к" + id.ToString();
-        WebLogger.logger.Trace($"{threadId}: Получает сообщение из kafka и отправляет в 1с по url {url}");
+        Random rnd = new Random();
+        int id = rnd.Next(1, 100);
+        //var id = Thread.CurrentThread.ManagedThreadId;
+        var threadId = "K" + id.ToString();
+        WebLogger.logger.Trace($"({threadId}): из kafka в 1с по url {url}");
 
         try
         {
             //экземпляр kafka создаётся с помощью данных из "My.config"
-            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
+            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaConsumerTopics", url), threadId);
             IConsumer<Null, string> consumer;
-            if (!kafka.Consumer(out consumer))
+            if (!kafka.GetConsumer(out consumer))
             {
                 throw new Exception("Не получилось подключиться к kafka!");
             }
@@ -148,6 +149,19 @@ public class Methods1C8
                             streamWriter.Write(mess);
                             WebLogger.logger.Trace($"{threadId}: Отправили объект в 1с");
                         }
+                        using (WebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+                        {
+                            using (Stream stream = response.GetResponseStream())
+                            {
+                                using (StreamReader reader = new StreamReader(stream))
+                                {
+                                    var doc = reader.ReadToEnd();
+
+                                    WebLogger.logger.Trace($"{threadId}: Из 1с пришёл ответ {doc}");
+                                }
+                            }
+                        }
+                        Thread.Sleep(2000); //200
                     }
                 }
             }

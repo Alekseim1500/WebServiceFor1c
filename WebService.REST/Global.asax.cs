@@ -14,15 +14,15 @@ namespace WebService.REST
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            foreach (var str in Отправители.Produser1C8)
-            {
-                Task<string> task = Methods1C8.ResponseAsync(str);
-            }
+            //foreach (var str in Отправители.Produser1C8)
+            //{
+            //    Task<string> task = Methods1C8.ResponseAsync(str);
+            //}
 
-            foreach (var str in Получатели.Consumer1С8)
-            {
-                Task<string> task = Methods1C8.PostObject(str);
-            }
+            //foreach (var str in Получатели.Consumer1С8)
+            //{
+            //    Task<string> task = Methods1C8.PostObject(str);
+            //}
 
             Task<string> task0 = SqlConnector.PostObject();
         }

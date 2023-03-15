@@ -3,6 +3,7 @@ using KafkaNet.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -13,15 +14,15 @@ public class SqlConnector
     {
         //получаем id потока
         var id = Thread.CurrentThread.ManagedThreadId;
-        var threadId = "с" + id.ToString();
-        WebLogger.logger.Trace($"{threadId}: Получает сообщение из kafka и отправляет в sql");
+        var threadId = "S" + id.ToString();
+        WebLogger.logger.Trace($"({threadId}): из kafka в sql");
 
         try
         {
             //экземпляр kafka создаётся с помощью данных из "My.config"
-            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
+            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaConsumerTopics", "Тестовое событие"), threadId);
             IConsumer<Null, string> consumer;
-            if (!kafka.Consumer(out consumer))
+            if (!kafka.GetConsumer(out consumer))
             {
                 throw new Exception("Не получилось подключиться к kafka!");
             }

@@ -23,6 +23,7 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/AAA")]
         public string AAA()
         {
+            var a = GlobalMethods.ParametrObjects("KafkaProduserTopics", "Тестовое событие");
             return "";
         }
 
@@ -128,8 +129,8 @@ namespace WebService.REST
         [WebGet(UriTemplate = "/PostKafka")]
         public string PostKafka()
         {
-            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaTopics", "Тестовое событие"));
-            return kafka.Produser($"Привет kafka {DateTime.Now.ToString()}!").ToString();
+            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaProduserTopics", "Тестовое событие"), "1");
+            return kafka.ProduseMessage($"Привет kafka {DateTime.Now.ToString()}!").ToString();
         }
 
         [WebGet(UriTemplate = "/GetKafka")]
