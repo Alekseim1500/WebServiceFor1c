@@ -5,6 +5,12 @@
 - [Инструкция к работе с C#](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#инструкция-к-работе-с-c)
 
 - [Инструкция к работе с 1С](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#Инструкция-к-работе-с-1С)
+  -[1С – что это такое?](https://github.com/Alekseim1500/WebServiceFor1c#1с--что-это-такое)
+  -[]
+  -[]
+  -[]
+  -[]
+  
 
 - [Инструкция к работе с Apache Kafka](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#инструкция-к-работе-с-apache-kafka)
   - [Установки](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#для-установки-нужно)
