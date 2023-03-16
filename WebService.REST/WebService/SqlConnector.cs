@@ -17,37 +17,40 @@ public class SqlConnector
         var threadId = "S" + id.ToString();
         WebLogger.logger.Trace($"({threadId}): из kafka в sql");
 
-        try
+        while (true)
         {
-            //экземпляр kafka создаётся с помощью данных из "My.config"
-            var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaConsumerTopics", "Тестовое событие"), threadId);
-            IConsumer<Null, string> consumer;
-            if (!kafka.GetConsumer(out consumer))
+            try
             {
-                throw new Exception("Не получилось подключиться к kafka!");
-            }
-            else
-            {
-                using (consumer)
+                //экземпляр kafka создаётся с помощью данных из "My.config"
+                var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaConsumerTopics", "Тестовое событие"), threadId);
+                IConsumer<Null, string> consumer;
+                if (!kafka.GetConsumer(out consumer))
                 {
-                    while (true)
+                    throw new Exception("Не получилось подключиться к kafka!");
+                }
+                else
+                {
+                    using (consumer)
                     {
-                        var data = await Task.Run(() => consumer.Consume());
-                        var mess = data.Message.Value;
-                        WebLogger.logger.Trace($"{threadId}: Получили сообщение из kafka: {mess}");
+                        while (true)
+                        {
+                            var data = await Task.Run(() => consumer.Consume());
+                            var mess = data.Message.Value;
+                            WebLogger.logger.Trace($"{threadId}: Получили сообщение из kafka: {mess}");
+                            consumer.Commit();
 
-                        var sql = new Sql(GlobalMethods.ParametrObjects("Sql", data.Topic));
-                        sql.insert(mess);
+                            var sql = new Sql(GlobalMethods.ParametrObjects("Sql", data.Topic));
+                            sql.insert(mess);
+                        }
                     }
                 }
             }
-        }
-        catch(Exception ex)
-        {
-            var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
-            Messenger.Post(errorMessage);
-            WebLogger.logger.Error($"{threadId}: {errorMessage}");
-            return errorMessage;
+            catch (Exception ex)
+            {
+                var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
+                Messenger.Post(errorMessage);
+                WebLogger.logger.Error($"{threadId}: {errorMessage}");
+            }
         }
     }
 }

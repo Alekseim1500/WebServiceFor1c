@@ -53,7 +53,7 @@ public class Kafka
             {
                 GroupId = threadId, // идентификатор группы, к которой будет принадлежать Consumer
                 BootstrapServers = soket,
-                AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
+                //AutoOffsetReset = AutoOffsetReset.Earliest // начать чтение сообщений с самого начала топика 
             };
 
             consumer = new ConsumerBuilder<Null, string>(conf).Build();

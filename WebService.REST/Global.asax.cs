@@ -27,7 +27,7 @@ namespace WebService.REST
                 Task<string> task = Methods1C8.PostObject(cons[i], i + 1);
             }
 
-            Task<string> task0 = SqlConnector.PostObject();
+            //Task<string> task0 = SqlConnector.PostObject();
         }
 
         protected void Session_Start(object sender, EventArgs e)

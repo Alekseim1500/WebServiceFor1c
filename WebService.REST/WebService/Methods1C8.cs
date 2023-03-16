@@ -106,8 +106,8 @@ public class Methods1C8
                 var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
                 Messenger.Post(errorMessage);
                 WebLogger.logger.Error($"{threadId}: {errorMessage}");
-                return errorMessage;
             }
+            Thread.Sleep(2000);
         }
     }
 
@@ -117,52 +117,19 @@ public class Methods1C8
         var threadId = "K" + id.ToString();
         WebLogger.logger.Trace($"({threadId}): из kafka в 1с по url {url}");
 
+        //экземпляр kafka создаётся с помощью данных из "My.config"
+        var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaConsumerTopics", url), threadId);
+        IConsumer<Null, string> consumer = null;
+
         while (true)
         {
             try
             {
-                //экземпляр kafka создаётся с помощью данных из "My.config"
-                var kafka = new Kafka(GlobalMethods.ParametrObjects("KafkaConsumerTopics", url), threadId);
-                IConsumer<Null, string> consumer;
-                if (!kafka.GetConsumer(out consumer))
+                if (consumer == null)
                 {
-                    throw new Exception("Не получилось подключиться к kafka!");
-                }
-                else
-                {
-                    using (consumer)
+                    if (!kafka.GetConsumer(out consumer))
                     {
-                        while (true)
-                        {
-                            WebRequest request = WebRequest.Create(url);
-                            request.Timeout = 300000;
-                            request.ContentType = "application/json";
-                            request.Method = "POST";
-                            request.Credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
-
-                            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                            {
-                                var data = await Task.Run(() => consumer.Consume());
-                                var mess = data.Message.Value;
-                                WebLogger.logger.Trace($"{threadId}: Получили сообщение из kafka: {mess}");
-
-                                streamWriter.Write(mess);
-                                WebLogger.logger.Trace($"{threadId}: Отправили объект в 1с");
-                            }
-                            using (WebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-                            {
-                                using (Stream stream = response.GetResponseStream())
-                                {
-                                    using (StreamReader reader = new StreamReader(stream))
-                                    {
-                                        var doc = reader.ReadToEnd();
-
-                                        WebLogger.logger.Trace($"{threadId}: Из 1с пришёл ответ {doc}");
-                                    }
-                                }
-                            }
-                            Thread.Sleep(2000); //200
-                        }
+                        throw new Exception("Не получилось подключиться к kafka!");
                     }
                 }
             }
@@ -171,8 +138,53 @@ public class Methods1C8
                 var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
                 Messenger.Post(errorMessage);
                 WebLogger.logger.Error($"{threadId}: {errorMessage}");
-                return errorMessage;
             }
+
+            try
+            {
+                using (consumer)
+                {
+                    while (true)
+                    {
+                        WebRequest request = WebRequest.Create(url);
+                        request.Timeout = 300000;
+                        request.ContentType = "application/json";
+                        request.Method = "POST";
+                        request.Credentials = new NetworkCredential(Parametr1C8.user, Parametr1C8.pass);
+
+                        using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                        {
+                            var data = await Task.Run(() => consumer.Consume());
+                            var mess = data.Message.Value;
+                            WebLogger.logger.Trace($"{threadId}: Получили сообщение из kafka: {mess}");
+                            consumer.Commit();
+
+                            streamWriter.Write(mess);
+                            WebLogger.logger.Trace($"{threadId}: Отправили объект в 1с");
+                        }
+                        using (WebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+                        {
+                            using (Stream stream = response.GetResponseStream())
+                            {
+                                using (StreamReader reader = new StreamReader(stream))
+                                {
+                                    var doc = reader.ReadToEnd();
+                                    WebLogger.logger.Trace($"{threadId}: Из 1с пришёл ответ {doc}");
+                                }
+                            }
+                        }
+                        Thread.Sleep(2000); //200
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = $"{ex.Message} {ex.InnerException?.Message}";
+                Messenger.Post(errorMessage);
+                WebLogger.logger.Error($"{threadId}: {errorMessage}");
+            }
+
+            Thread.Sleep(2000);
         }
     }
 }
