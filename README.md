@@ -5,12 +5,17 @@
 - [Инструкция к работе с C#](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#инструкция-к-работе-с-c)
 
 - [Инструкция к работе с 1С](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#Инструкция-к-работе-с-1С)
-  -[1С – что это такое?](https://github.com/Alekseim1500/WebServiceFor1c#1с--что-это-такое)
-  -[]
-  -[]
-  -[]
-  -[]
-  
+	- [1С – что это такое?](https://github.com/Alekseim1500/WebServiceFor1c#1с--что-это-такое)
+	- [Установка учебной версии 1С](https://github.com/Alekseim1500/WebServiceFor1c#установка-учебной-версии-1с)
+	- [Ознакомление и изучение работы с «1С:Предприятие 8.3, учебная версия (8.3.22.1709)» (Windows)](https://github.com/Alekseim1500/WebServiceFor1c#ознакомление-и-изучение-работы-с-1спредприятие-83-учебная-версия-83221709-windows)
+	- [WEB и HTTP сервисы в 1С](https://github.com/Alekseim1500/WebServiceFor1c#web-и-http-сервисы-в-1с)
+	- [Проблема учебной версии](https://github.com/Alekseim1500/WebServiceFor1c#проблема-учебной-версии)
+	- [Подготовка «1С:Предприятие» к публикации на Web-сервере](https://github.com/Alekseim1500/WebServiceFor1c#подготовка-1спредприятие-к-публикации-на-web-сервере)
+	- [Установка Web-сервера](https://github.com/Alekseim1500/WebServiceFor1c#установка-web-сервера)
+	- [Публикация «1С:Предприятие» на web – сервере](https://github.com/Alekseim1500/WebServiceFor1c#публикация-1спредприятие-на-web--сервере)
+	- [Создание http сервиса](https://github.com/Alekseim1500/WebServiceFor1c#создание-http-сервиса)
+	- [HTTP сервис на POST](https://github.com/Alekseim1500/WebServiceFor1c#http-сервис-на-post)
+	- [HTTP сервис на GET](https://github.com/Alekseim1500/WebServiceFor1c#http-сервис-на-get)  
 
 - [Инструкция к работе с Apache Kafka](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#инструкция-к-работе-с-apache-kafka)
   - [Установки](https://github.com/Alekseim1500/WebServiceFor1c/blob/main/README.md#для-установки-нужно)
